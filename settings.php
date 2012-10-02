@@ -1,5 +1,6 @@
 <?php 
 /*
+======================================================================================
 
   Author		Ulises Rodríguez
   Site:			http://www.ulisesrodriguez.com	
@@ -8,11 +9,20 @@
   Github:		https://github.com/ulisesrodriguez
   Email:		ing.ulisesrodriguez@gmail.com
   Skype:		systemonlinesoftware
-  Location:		Mexíco
+  Location:		Guadalajara Jalisco Mexíco
+  
+  FILE
+  settings.php
+  
+  DESCRIPTION:
+  Setting conection to database
 
-*/
+====================================================================================== */
 
-// Settings
+/*
+======================================================================================
+ Class Settings
+====================================================================================== */
 
 class Settings{
 	

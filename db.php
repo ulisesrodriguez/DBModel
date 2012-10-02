@@ -1,4 +1,6 @@
 <?php
+// Include Files
+require 'settings.php';
 /*
 ======================================================================================
 
@@ -20,11 +22,6 @@
   DEPENDENCIAS: 
   settings.php
 ====================================================================================== */
-
-
-// Include Files
-require 'settings.php';
-
 /*
 ======================================================================================
  Class DB
@@ -71,23 +68,24 @@ class Db{
 	$sql =	"INSERT INTO `". $table ."`( "; 
 		
 		foreach( $data as $key => $value )			
-			$sql .= "". strip_tags( $key ) .", ";	
-				
-	$sql .= ') VALUES (null';	
+			$sql .= "`". strip_tags( $key ) ."`, ";	
 	
-	$sql = str_replace( ',)', ' )', $sql );	
-		 
+					
+	$sql .= ') VALUES ( ';	
+	
 		foreach( $data as $value )
-				$sql .= ",". strip_tags( $value ) ."";	
+				$sql .= " '". strip_tags( $value ) ."', ";	
 		
 	$sql .= ');';	
 	
-	$res = mysql_query( $sql, $this->conection->con() );
-	
-	// Setting insert_id
-	$this->insert_id = mysql_insert_id( $res );
+	$sql = str_replace( ', )', ' )', $sql );	
 		
-	if( mysql_num_rows( $res ) > 0 )
+	$res = mysql_query( $sql, $this->conection->con() );
+			
+	// Setting insert_id
+	$this->insert_id = mysql_insert_id();
+		
+	if( mysql_affected_rows() > 0 )
 		return true;
 	else
 		return false;
@@ -100,7 +98,7 @@ class Db{
 ======================================================================================
   Update Record	
 ====================================================================================== */
-  public function update( $table = null, $data = array(), $id = null ){
+  public function update( $table = null, $data = array(), $conditions = array() ){
 	  
 	 // Validate Table
 	if( empty( $table ) ){ echo '<h1 class="error">Empty Table</h1>'; return false; }
@@ -109,23 +107,41 @@ class Db{
 	if( empty( $data ) ){ echo '<h1 class="error">Empty Data</h1>'; return false; }
 	
 	// Validation empty
-	if( empty( $id ) or !is_numeric( $id ) ){ echo '<h1 class="error">ID Invalido</h1>'; return false; }
+	if( empty( $conditions ) ){ echo '<h1 class="error">Conditions Invalids</h1>'; return false; }
 	
 	 
 	// Dynamic Query 
 	$sql =	"UPDATE `". $table ."` 
 			 SET";
-				
+	
 	foreach( $data as $key => $value )							
 		$sql .= ", `". strip_tags( $key ) ."`='". strip_tags( $value ) ."'" ;
 	
-	$sql .= " WHERE `id`=". strip_tags( $id ) .';';
+	
+	$condition = ' WHERE ';	
+	
+	foreach( $conditions as $key => $value ){
+				
+		if( $condition == ' WHERE ' ){
+			$sql .= " WHERE `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";
+			$condition = ' AND ';
+		
+		}else if( $condition == ' AND ' )
+			$sql .= " AND `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";		
+				
+	}		
+	
+	
 	
 	$count = strlen( 'UPDATE `'. $table  .'` SET,      ');
 
 	$sql = substr_replace( $sql, 'UPDATE `'. $table .'` SET',0, $count );
 	
-	if( mysql_num_rows( $res ) > 0 )
+	$sql .= '; ';
+		
+	$res = mysql_query( $sql, $this->conection->con() );
+			
+	if( mysql_affected_rows() > 0 )
 		return true;
 	else
 		return false;
@@ -147,25 +163,28 @@ class Db{
 	
 	
 	// Dynamic query 
-	 $sql = ' DELETE FROM `'.$table.'` ';
+	$sql = ' DELETE FROM `'.$table.'` ';
 	 
-	 foreach( $data as $key => $value ){
-		
-		$condition = ' WHERE ';	
-		
+	$condition = ' WHERE ';	
+	
+	foreach( $data as $key => $value ){
+					
 		if( $condition == ' WHERE ' ){
 			$sql .= " WHERE `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";
 			$condition = ' AND ';
-		}else
+			
+		}else if( $condition == ' AND ' )
 			$sql .= " AND `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";		
-				
-	  }
+					
+	}		
 	 
 	 $sql .= ';';
 	 
-	 if( mysql_num_rows( $res ) > 0 )
+	 $res = mysql_query( $sql, $this->conection->con() );
+	 
+	 if( mysql_affected_rows() > 0 )
 		return true;
-	else
+      else
 		return false; 	  
   
   }
@@ -192,7 +211,6 @@ class Db{
 	 
 	 $this->query = ' SELECT  ' . $str;
 	
-	return $this->query;	 
 	 
   }
 
@@ -210,8 +228,6 @@ class Db{
 		 
 	$this->query .= ' FROM  ' . $table;
 	
-	return $this->query;	 
-	 
   }
 
 /*  
@@ -236,9 +252,7 @@ class Db{
 			$this->query .= " AND `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";		
 				
 	  }	
-	
-	 return $this->query;
-	
+		
   }
 
 /*  
@@ -255,9 +269,7 @@ class Db{
 	if( empty( $conditions ) ){ echo '<h1 class="error">Empty conditions</h1>'; return false; }
 	
 	$this->query .= ' JOIN LEFT `'. strip_tags( $table ) .'` ON '. strip_tags( $conditions ) .' ' ;	
-    
-	return $this->query;
-	
+    	
   }
 
 /*  
@@ -268,9 +280,7 @@ class Db{
   public function limit( $begin = 0, $end = 10 ){
   
   	 $this->query .= ' LIMIT '. strip_tags( $begin ) . ' , '. strip_tags( $end ) ;
-  	 
-	 return $this->query;
-	
+  	 	
   }
 
 /*  
@@ -286,9 +296,7 @@ class Db{
 	if( empty( $field ) ){ echo '<h1 class="error">Empty field</h1>'; return false; }
 	
 	$this->query .= ' ORDER BY `'. strip_tags( $field ) .'` '. strip_tags( $condition ) .' ' ;	
-    
-	return $this->query;
-	
+    	
   }
  
 
@@ -318,13 +326,8 @@ class Db{
 
 // RUNING A DINAMIC QUERY 
   public function get( $table = null ){
-	 
-	 // Validate Table
-	if( empty( $tables ) ){ echo '<h1 class="error">Empty table</h1>'; return false; }
-	
-	if( empty( $this->query ) ){ echo '<h1 class="error">Empty query</h1>'; return false;  }
-	
-	if( !empty( $table ) ){
+		 
+	if( !empty( $table ) and empty( $this->query ) ){
 		
 		$res = mysql_query( $this->select()->from( $table ), $this->conection->con() );
 		
@@ -339,7 +342,7 @@ class Db{
 	}
 	
 	$res = mysql_query( $this->query, $this->conection->con() );
-		
+			
 	if( mysql_num_rows( $res ) == 0 ) return false;
 		 
 	while( $reg = mysql_fetch_assoc( $res ) )	 				
