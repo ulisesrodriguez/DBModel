@@ -1,6 +1,4 @@
 <?php
-// Include Files
-require 'settings.php';
 /*
 ======================================================================================
 
@@ -189,12 +187,7 @@ class Db{
   
   }
 
-/*
-======================================================================================
-  Return Id	
-====================================================================================== */
-	public function insert_id(){ return $this->insert_id; }
-	
+
 /*
 ======================================================================================
   SETTING QUERYS
@@ -314,7 +307,7 @@ class Db{
    public function querys( $query = null ){
 	 
 	// Validate Table
-	if( empty( $tables ) ){ echo '<h1 class="error">Empty query</h1>'; return false; }
+	if( empty( $query ) ){ echo '<h1 class="error">Empty query</h1>'; return false; }
 	
 	$res = mysql_query( $query, $this->conection->con() );
 	
@@ -345,13 +338,15 @@ class Db{
 		
 		
 	}
-	
+				
 	$res = mysql_query( $this->query, $this->conection->con() );
 			
 	if( mysql_num_rows( $res ) == 0 ) return false;
 		 
 	while( $reg = mysql_fetch_assoc( $res ) )	 				
 			$this->data[] = $reg;	
+	
+	$this->query = null;
 				
 	return $this->data;
 	 
