@@ -239,9 +239,10 @@ class Db{
 	// Validate Table
 	if( empty( $conditions ) ){ echo '<h1 class="error">Empty conditions </h1>'; return false; }
   	
+	$condition = ' WHERE ';	
+	
 	foreach( $conditions as $key => $value ){
 		
-		$condition = ' WHERE ';	
 		
 		if( $condition == ' WHERE ' ){
 			$this->query .= " WHERE `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";
@@ -338,6 +339,8 @@ class Db{
 		
 		
 	}
+	
+	echo $this->query;
 				
 	$res = mysql_query( $this->query, $this->conection->con() );
 			
