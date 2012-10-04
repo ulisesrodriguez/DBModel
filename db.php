@@ -339,9 +339,7 @@ class Db{
 		
 		
 	}
-	
-	echo $this->query;
-				
+			
 	$res = mysql_query( $this->query, $this->conection->con() );
 			
 	if( mysql_num_rows( $res ) == 0 ) return false;
