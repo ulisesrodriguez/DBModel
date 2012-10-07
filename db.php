@@ -242,12 +242,28 @@ class Db{
 	foreach( $conditions as $key => $value ){
 		
 		if( !strpos( $this->query, ' WHERE ' )  ){
-			$this->query .= " WHERE ". strip_tags( $key ) ."='". strip_tags( $value ) ."' ";
+			$this->query .= " WHERE ". strip_tags( $key ) ."'". strip_tags( $value ) ."' ";
 		}else
-			$this->query .= " AND ". strip_tags( $key ) ."='". strip_tags( $value ) ."' ";
+			$this->query .= " AND ". strip_tags( $key ) ."'". strip_tags( $value ) ."' ";
 			
 	  }	
 		
+  }
+
+/*  
+===========================  
+  PRODUCES 
+  OR key = value
+=========================== */  
+  public function or_where( $field = null, $value = null ){
+  	
+	// Validate Table
+	if( empty( $field ) ){ echo '<h1 class="error">Empty Field </h1>'; return false; }
+	
+	if( empty( $value ) ){ echo '<h1 class="error">Empty Value </h1>'; return false; }
+  	
+	 $this->query .=  ' OR ' . strip_tags( $field ) ."'". strip_tags( $value ) ."' ";
+			
   }
 
 /*  
@@ -335,7 +351,7 @@ class Db{
 		
 		
 	}
-				
+	
 	$res = mysql_query( $this->query, $this->conection->con() );
 			
 	if( mysql_num_rows( $res ) == 0 ) return false;
