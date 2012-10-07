@@ -262,12 +262,12 @@ class Db{
   public function join( $table = null, $conditions = null ){
  
  	// Validate Table
-	if( empty( $tables ) ){ echo '<h1 class="error">Empty tables</h1>'; return false; }
+	if( empty( $table ) ){ echo '<h1 class="error">Empty tables</h1>'; return false; }
 	
 	// Validate Conditions
 	if( empty( $conditions ) ){ echo '<h1 class="error">Empty conditions</h1>'; return false; }
 	
-	$this->query .= ' JOIN LEFT `'. strip_tags( $table ) .'` ON '. strip_tags( $conditions ) .' ' ;	
+	$this->query .= ' JOIN `'. strip_tags( $table ) .'` ON '. strip_tags( $conditions ) .' ' ;	
     	
   }
 
@@ -339,6 +339,7 @@ class Db{
 		
 		
 	}
+	
 			
 	$res = mysql_query( $this->query, $this->conection->con() );
 			
