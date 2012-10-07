@@ -239,17 +239,13 @@ class Db{
 	// Validate Table
 	if( empty( $conditions ) ){ echo '<h1 class="error">Empty conditions </h1>'; return false; }
   	
-	$condition = ' WHERE ';	
-	
 	foreach( $conditions as $key => $value ){
 		
-		
-		if( $condition == ' WHERE ' ){
-			$this->query .= " WHERE `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";
-			$condition = ' AND ';
+		if( !strpos( $this->query, ' WHERE ' )  ){
+			$this->query .= " WHERE ". strip_tags( $key ) ."='". strip_tags( $value ) ."' ";
 		}else
-			$this->query .= " AND `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";		
-				
+			$this->query .= " AND ". strip_tags( $key ) ."='". strip_tags( $value ) ."' ";
+			
 	  }	
 		
   }
@@ -339,8 +335,7 @@ class Db{
 		
 		
 	}
-	
-			
+				
 	$res = mysql_query( $this->query, $this->conection->con() );
 			
 	if( mysql_num_rows( $res ) == 0 ) return false;
