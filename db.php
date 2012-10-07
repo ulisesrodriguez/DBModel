@@ -309,7 +309,10 @@ class Db{
 	$this->query .= ' ORDER BY `'. strip_tags( $field ) .'` '. strip_tags( $condition ) .' ' ;	
     	
   }
- 
+  
+  public function getQuery(){
+  	 return $this->query;
+  }
 
 /*
 ======================================================================================
