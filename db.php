@@ -286,11 +286,17 @@ class Db{
 /*  
 =====================================  
   PRODUCES 
+  LIMIT begin
+  OR
   LIMIT begin, end
 ===================================== */   
-  public function limit( $begin = 0, $end = 10 ){
-  
-  	 $this->query .= ' LIMIT '. strip_tags( $begin ) . ' , '. strip_tags( $end ) ;
+  public function limit( $begin = 0, $end = null ){
+  	 
+	 if( empty( $end ) )	
+  	 	$this->query .= ' LIMIT '. strip_tags( $begin ) ;
+	 else
+	  	$this->query .= ' LIMIT '. strip_tags( $begin ) . ' , '. strip_tags( $end ) ;	
+		
   	 	
   }
 
