@@ -52,15 +52,34 @@ class Db{
 
 /*
 ======================================================================================
+  CLEAN ANTI XSS
+====================================================================================== */
+ public function smart_quotes( $value = null ){ 
+    
+	if( empty( $value ) ) return false;
+
+	 // Clean slashes
+	if ( get_magic_quotes_gpc() )
+        return stripslashes( $value );
+   
+    if ( !is_numeric( $value ) ) 
+        return mysql_real_escape_string( $value, $this->conection->con() );
+    
+	return $value;
+ }
+
+
+/*
+======================================================================================
   Create Record	
 ====================================================================================== */
   public function insert( $table = null, $data = array() ){
 	
 	// Validate Table
-	if( empty( $table ) ){ echo '<h1 class="error">Empty Table</h1>'; return false; }
+	if( empty( $table ) ) return false;
 			
 	// Validation empty
-	if( empty( $data ) ){ echo '<h1 class="error">Empty Data</h1>'; return false; }
+	if( empty( $data ) ) return false;
 	
 	// Dynamic query
 	$sql =	"INSERT INTO `". $table ."`( "; 
@@ -72,14 +91,14 @@ class Db{
 	$sql .= ') VALUES ( ';	
 	
 		foreach( $data as $value )
-				$sql .= " '". strip_tags( $value ) ."', ";	
+				$sql .= " '". $this->smart_quotes( strip_tags( $value )  )."', ";	
 		
 	$sql .= ');';	
 	
 	$sql = str_replace( ', )', ' )', $sql );	
 		
 	$res = mysql_query( $sql, $this->conection->con() );
-			
+				
 	// Setting insert_id
 	$this->insert_id = mysql_insert_id();
 		
@@ -99,21 +118,21 @@ class Db{
   public function update( $table = null, $data = array(), $conditions = array() ){
 	  
 	 // Validate Table
-	if( empty( $table ) ){ echo '<h1 class="error">Empty Table</h1>'; return false; }
+	if( empty( $table ) ) return false;
 			
 	// Validation empty
-	if( empty( $data ) ){ echo '<h1 class="error">Empty Data</h1>'; return false; }
+	if( empty( $data ) ) return false;
 	
 	// Validation empty
-	if( empty( $conditions ) ){ echo '<h1 class="error">Conditions Invalids</h1>'; return false; }
+	if( empty( $conditions ) )  return false;
 	
 	 
 	// Dynamic Query 
 	$sql =	"UPDATE `". $table ."` 
-			 SET";
+			   SET";
 	
 	foreach( $data as $key => $value )							
-		$sql .= ", `". strip_tags( $key ) ."`='". strip_tags( $value ) ."'" ;
+		$sql .= ", `". $this->smart_quotes( strip_tags( $key ) ) ."`='". $this->smart_quotes( strip_tags( $value ) ) ."'" ;
 	
 	
 	$condition = ' WHERE ';	
@@ -121,22 +140,22 @@ class Db{
 	foreach( $conditions as $key => $value ){
 				
 		if( $condition == ' WHERE ' ){
-			$sql .= " WHERE `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";
+			$sql .= " WHERE `". $this->smart_quotes( strip_tags( $key ) ) ."`='". $this->smart_quotes( strip_tags( $value ) ) ."' ";
 			$condition = ' AND ';
 		
 		}else if( $condition == ' AND ' )
-			$sql .= " AND `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";		
+			$sql .= " AND `". $this->smart_quotes( strip_tags( $key ) ) ."`='". $this->smart_quotes( strip_tags( $value ) ) ."' ";		
 				
 	}		
 	
 	
 	
-	$count = strlen( 'UPDATE `'. $table  .'` SET,      ');
+	$count = strlen( 'UPDATE `'. $table  .'` SET,        ');
 
 	$sql = substr_replace( $sql, 'UPDATE `'. $table .'` SET',0, $count );
 	
 	$sql .= '; ';
-		
+				
 	$res = mysql_query( $sql, $this->conection->con() );
 			
 	if( mysql_affected_rows() > 0 )
@@ -154,10 +173,10 @@ class Db{
   public function delete( $table = null, $data = null ){
 	 
 	  // Validate Table
-	if( empty( $table ) ){ echo '<h1 class="error">Empty Table</h1>'; return false; }
+	if( empty( $table ) ) return false;
 	
 	// Validation empty
-	if( empty( $data ) ){ echo '<h1 class="error">Empty fields conditions</h1>'; return false; }
+	if( empty( $data ) )  return false; 
 	
 	
 	// Dynamic query 
@@ -168,11 +187,11 @@ class Db{
 	foreach( $data as $key => $value ){
 					
 		if( $condition == ' WHERE ' ){
-			$sql .= " WHERE `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";
+			$sql .= " WHERE `". $this->smart_quotes( strip_tags( $key ) ) ."`='". $this->smart_quotes( strip_tags( $value ) ) ."' ";
 			$condition = ' AND ';
 			
 		}else if( $condition == ' AND ' )
-			$sql .= " AND `". strip_tags( $key ) ."`='". strip_tags( $value ) ."' ";		
+			$sql .= " AND `". $this->smart_quotes( strip_tags( $key ) ) ."`='". $this->smart_quotes( strip_tags( $value ) ) ."' ";		
 					
 	}		
 	 
@@ -207,7 +226,7 @@ class Db{
 	 
 	 $this->query = '';
 	 
-	 $this->query = ' SELECT  ' . $str;
+	 $this->query = ' SELECT  ' . $this->smart_quotes( $str );
 	
 	 
   }
@@ -222,9 +241,9 @@ class Db{
   public function from( $table = null ){
 	 
 	// Validate Table
-	if( empty( $table ) ){ echo '<h1 class="error">Empty Table</h1>'; return false; }
+	if( empty( $table ) ) return false;
 		 
-	$this->query .= ' FROM  ' . $table;
+	$this->query .= ' FROM  ' . $this->smart_quotes( $table );
 	
   }
 
@@ -237,14 +256,14 @@ class Db{
   public function where( $conditions = array() ){
   	
 	// Validate Table
-	if( empty( $conditions ) ){ echo '<h1 class="error">Empty conditions </h1>'; return false; }
+	if( empty( $conditions ) ) return false;
   	
 	foreach( $conditions as $key => $value ){
 		
 		if( !strpos( $this->query, ' WHERE ' )  ){
-			$this->query .= " WHERE ". strip_tags( $key ) ."'". strip_tags( $value ) ."' ";
+			$this->query .= " WHERE ". $this->smart_quotes( strip_tags( $key ) ) ."'". $this->smart_quotes( strip_tags( $value ) ) ."' ";
 		}else
-			$this->query .= " AND ". strip_tags( $key ) ."'". strip_tags( $value ) ."' ";
+			$this->query .= " AND ". $this->smart_quotes( strip_tags( $key ) ) ."'". $this->smart_quotes( strip_tags( $value ) ) ."' ";
 			
 	  }	
 		
@@ -258,11 +277,11 @@ class Db{
   public function or_where( $field = null, $value = null ){
   	
 	// Validate Table
-	if( empty( $field ) ){ echo '<h1 class="error">Empty Field </h1>'; return false; }
+	if( empty( $field ) ) return false;
 	
-	if( empty( $value ) ){ echo '<h1 class="error">Empty Value </h1>'; return false; }
+	if( empty( $value ) ) return false;
   	
-	 $this->query .=  ' OR ' . strip_tags( $field ) ."'". strip_tags( $value ) ."' ";
+	 $this->query .=  ' OR ' . $this->smart_quotes( strip_tags( $field ) ) ."'". $this->smart_quotes( strip_tags( $value ) ) ."' ";
 			
   }
 
@@ -274,12 +293,12 @@ class Db{
   public function join( $table = null, $conditions = null ){
  
  	// Validate Table
-	if( empty( $table ) ){ echo '<h1 class="error">Empty tables</h1>'; return false; }
+	if( empty( $table ) )  return false;
 	
 	// Validate Conditions
-	if( empty( $conditions ) ){ echo '<h1 class="error">Empty conditions</h1>'; return false; }
+	if( empty( $conditions ) ) return false;
 	
-	$this->query .= ' JOIN `'. strip_tags( $table ) .'` ON '. strip_tags( $conditions ) .' ' ;	
+	$this->query .= ' JOIN `'. $this->smart_quotes( strip_tags( $table ) ) .'` ON '. $this->smart_quotes( strip_tags( $conditions ) ) .' ' ;	
     	
   }
 
@@ -293,9 +312,9 @@ class Db{
   public function limit( $begin = 0, $end = null ){
   	 
 	 if( empty( $end ) )	
-  	 	$this->query .= ' LIMIT '. strip_tags( $begin ) ;
+  	 	$this->query .= ' LIMIT '. $this->smart_quotes( strip_tags( $begin ) );
 	 else
-	  	$this->query .= ' LIMIT '. strip_tags( $begin ) . ' , '. strip_tags( $end ) ;	
+	  	$this->query .= ' LIMIT '. $this->smart_quotes( strip_tags( $begin ) ) . ' , '. $this->smart_quotes( strip_tags( $end ) );	
 		
   	 	
   }
@@ -310,9 +329,9 @@ class Db{
   public function order_by( $field = null, $condition = 'asc' ){
  
  	// Validate Table
-	if( empty( $field ) ){ echo '<h1 class="error">Empty field</h1>'; return false; }
+	if( empty( $field ) )  return false;
 	
-	$this->query .= ' ORDER BY `'. strip_tags( $field ) .'` '. strip_tags( $condition ) .' ' ;	
+	$this->query .= ' ORDER BY `'. $this->smart_quotes( strip_tags( $field ) ) .'` '. $this->smart_quotes( strip_tags( $condition ) ) .' ' ;	
     	
   }
   
@@ -335,9 +354,9 @@ class Db{
    public function querys( $query = null ){
 	 
 	// Validate Table
-	if( empty( $query ) ){ echo '<h1 class="error">Empty query</h1>'; return false; }
+	if( empty( $query ) )  return false;
 	
-	$res = mysql_query( $query, $this->conection->con() );
+	$res = mysql_query( $this->smart_quotes( $query ), $this->conection->con() );
 	
 	if( mysql_num_rows( $res ) == 0 ) return false;
 	 
@@ -355,7 +374,7 @@ class Db{
 		 
 	if( !empty( $table ) and empty( $this->query ) ){
 		
-		$res = mysql_query( $this->select()->from( $table ), $this->conection->con() );
+		$res = mysql_query( $this->select()->from( $this->smart_quotes( $table ) ), $this->conection->con() );
 		
 		if( mysql_num_rows( $res ) == 0 ) return false;
 		 

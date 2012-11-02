@@ -45,7 +45,7 @@ class Settings{
   | @access -> private
   | @default: root
   **/	
-  private $user = 'root';
+  private $user = '';
 
  /**
   | @var password
@@ -83,9 +83,10 @@ class Settings{
   public function con(){
   	  	
 		$this->con = mysql_connect( $this->server, $this->user, $this->password ); 		
+		
 		mysql_select_db( $this->database, $this->con );	 		
  		
-		if( !$this->con ){ echo '<h1 class="error">Can\'t connect database</h1>'; exit; }
+		if( !$this->con ){return false; }
 		
  		if( $this -> con ){
  			return $this -> con;

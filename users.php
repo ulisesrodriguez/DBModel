@@ -1,6 +1,4 @@
 <?php
-// Include Files
-require 'db.php';
 /*
 ======================================================================================
 
@@ -93,7 +91,7 @@ class Users extends Db{
 	// Validation empty
 	if( empty( $id ) or !is_numeric( $id ) ) return false;
 	
-	$this->select(); $this->from( $this->table ); $this->where( array( 'id_usuario' => $id ) );
+	$this->select(); $this->from( $this->table ); $this->where( array( 'id_usuario =' => $id ) );
 	
 	return $this->get();
   

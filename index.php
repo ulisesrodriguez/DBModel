@@ -1,4 +1,7 @@
 <?php
+// Include Files
+require 'settings.php';
+require 'db.php';
 require 'users.php';	
 
 /*
@@ -53,9 +56,9 @@ $record = array(
 
 );
 
-//if( $user->create( $record ) == true ) echo '<br>Registro Creado'; else echo '<br> No se puede crear el registro';
+if( $user->create( $record ) == true ) echo '<br>Registro Creado'; else echo '<br> No se puede crear el registro';
 
-
+/*
 // Update Record
 $record = array(
 	
@@ -65,12 +68,13 @@ $record = array(
 
 );
 
-//if( $user->editar( $record, array( 'perfil' => 1, 'id_usuario' => 1 ) ) == true ) echo '<br>Registro Actualizado'; else echo '<br> No se puede actualizar el registro';
+if( $user->editar( $record, array( 'perfil' => 1, 'id_usuario' => 1 ) ) == true ) echo '<br>Registro Actualizado'; else echo '<br> No se puede actualizar el registro';
+*/
 
-//if( $user->editar( $record, array( 'id_usuario' => 1 ) ) == true ) echo '<br>Registro Actualizado'; else echo '<br> No se puede actualizar el registro';
 
 // Delete Record
-//if( $user->eliminar( array( 'id_usuario' => 11 ) ) == true ) echo '<br>Registro Eliminado'; else echo '<br> No se puede eliminar el registro';
+//if( $user->eliminar( array( 'id_usuario' => 1 ) ) == true ) echo '<br>Registro Eliminado'; else echo '<br> No se puede eliminar el registro';
+
 
 $info = $user->id( 1 );
 
@@ -82,5 +86,4 @@ $info = $user->all();
 
 
 print_r( $info );
-	
 ?>
