@@ -359,6 +359,8 @@ class Db{
 	$res = mysql_query( $this->smart_quotes( $query ), $this->conection->con() );
 	
 	if( mysql_num_rows( $res ) == 0 ) return false;
+	
+	unset( $this->data ); $this->data = array();	
 	 
 	while( $reg = mysql_fetch_assoc( $res ) )	 				
 			$this->data[] = $reg;	
@@ -377,6 +379,8 @@ class Db{
 		$res = mysql_query( $this->select()->from( $this->smart_quotes( $table ) ), $this->conection->con() );
 		
 		if( mysql_num_rows( $res ) == 0 ) return false;
+		
+		unset( $this->data ); $this->data = array();		
 		 
 		while( $reg = mysql_fetch_assoc( $res ) )	 				
 				$this->data[] = $reg;	
@@ -389,7 +393,9 @@ class Db{
 	$res = mysql_query( $this->query, $this->conection->con() );
 			
 	if( mysql_num_rows( $res ) == 0 ) return false;
-		 
+	
+	unset( $this->data ); $this->data = array();
+	
 	while( $reg = mysql_fetch_assoc( $res ) )	 				
 			$this->data[] = $reg;	
 	
