@@ -98,7 +98,7 @@ class Db{
 	$sql = str_replace( ', )', ' )', $sql );	
 		
 	$res = mysql_query( $sql, $this->conection->con() );
-				
+		
 	// Setting insert_id
 	$this->insert_id = mysql_insert_id();
 		
@@ -165,6 +165,7 @@ class Db{
 	 
 	 
   }
+  
   
 /*
 ======================================================================================
@@ -260,14 +261,42 @@ class Db{
   	
 	foreach( $conditions as $key => $value ){
 		
-		if( !strpos( $this->query, ' WHERE ' )  ){
+		if( !strpos( $this->query, ' WHERE ' )  )
+		
 			$this->query .= " WHERE ". $this->smart_quotes( strip_tags( $key ) ) ."'". $this->smart_quotes( strip_tags( $value ) ) ."' ";
-		}else
+		
+		else
+		
 			$this->query .= " AND ". $this->smart_quotes( strip_tags( $key ) ) ."'". $this->smart_quotes( strip_tags( $value ) ) ."' ";
 			
 	  }	
 		
   }
+ 
+
+/*  
+===========================  
+  PRODUCES 
+  WHERE calle LIKE '%shflaf%'
+  AND calle LIKE '%shflaf%'
+=========================== */  
+  public function where_like( $conditions = array() ){
+  	
+	// Validate values
+	if( empty( $conditions ) ) return false;
+  	
+	foreach( $conditions as $key => $value ){
+		
+		if( !strpos( $this->query, ' WHERE ' )  )
+			
+			$this->query .= " WHERE ". $this->smart_quotes( strip_tags( $key ) ) ." LIKE '%". $this->smart_quotes( strip_tags( $value ) ) ."%' ";
+						
+		else
+			$this->query .= " AND ". $this->smart_quotes( strip_tags( $key ) ) ." LIKE '%". $this->smart_quotes( strip_tags( $value ) ) ."%' ";
+			
+	}	
+		
+  }  
 
 /*  
 ===========================  
@@ -313,10 +342,11 @@ class Db{
   	 
 	 if( empty( $end ) )	
   	 	$this->query .= ' LIMIT '. $this->smart_quotes( strip_tags( $begin ) );
-	 else
-	  	$this->query .= ' LIMIT '. $this->smart_quotes( strip_tags( $begin ) ) . ' , '. $this->smart_quotes( strip_tags( $end ) );	
 		
-  	 	
+	 else
+	  	$this->query .= ' LIMIT '. strip_tags( $begin ) . ' , '. $this->smart_quotes( strip_tags( $end ) );	
+	
+  	
   }
 
 /*  
@@ -356,8 +386,9 @@ class Db{
 	// Validate Table
 	if( empty( $query ) )  return false;
 	
-	$res = mysql_query( $this->smart_quotes( $query ), $this->conection->con() );
-	
+	// Clean /*$this->smart_quotes( $query )*/
+	$res = mysql_query(  $query/*$this->smart_quotes( $query )*/, $this->conection->con() );
+			
 	if( mysql_num_rows( $res ) == 0 ) return false;
 	
 	unset( $this->data ); $this->data = array();	
