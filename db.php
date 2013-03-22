@@ -314,6 +314,28 @@ class Db{
 			
   }
 
+
+/*  
+===========================  
+  PRODUCES 
+  AND condition BETWEEN 'value1' AND 'value2'
+=========================== */  
+//AND DATE(fecha) BETWEEN '2005-07-16' AND '2005-07-16'
+ public function between( $condition = ' AND ', $field = null, $value = null, $value2 = null ){
+  	
+	// Validate Table
+	if( empty( $field ) ) return false;
+	
+	if( empty( $value ) ) return false;
+	
+	if( empty( $value2 ) ) return false;
+  	
+	
+	 $this->query .= $this->smart_quotes( strip_tags( $condition ) ) .' ' . $this->smart_quotes( strip_tags( $field ) ) . ' ' ."'". $this->smart_quotes( strip_tags( $value ) ) ."' AND " ."'" . $this->smart_quotes( strip_tags( $value2 ) ) ."'";
+			
+  }	
+
+
 /*  
 =====================================  
   PRODUCES 
