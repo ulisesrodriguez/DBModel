@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Dbmodel : Run various querys mysql" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Dbmodel</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ulisesrodriguez/DBModel">View on GitHub</a>
+
+          <h1 id="project_title">Dbmodel</h1>
+          <h2 id="project_tagline">Run various querys mysql</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ulisesrodriguez/DBModel/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ulisesrodriguez/DBModel/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>Ulises Rodríguez.</h3>
+
+<p>Site      : <a href="http://www.ulisesrodriguez.com">http://www.ulisesrodriguez.com</a>
+  Twitter   : @isc_ulises
+  Facebook  : <a href="http://www.facebook.com/ISC.Ulises">http://www.facebook.com/ISC.Ulises</a>
+  gmail     : <a href="mailto:ing.ulisesrodriguez@gmail.com">ing.ulisesrodriguez@gmail.com</a>
+  skype     : systemonlinesoftware
+  Github    : <a href="https://github.com/ulisesrodriguez">https://github.com/ulisesrodriguez</a></p>
+
+<p>Location: Mundial</p>
+
+<h3>Config</h3>
+
+<pre><code>        Open the file setting.php and set this var with your connection to a database.
+    private $server = 'localhost'; // Server name 
+    private $user = 'root';        // Database User
+    private $password = '';        // Database Password
+    private $database = '';        // Database Name
+
+
+</code></pre>
+
+<h3>Standards</h3>
+
+<pre><code>  PHP 
+  MySql
+</code></pre>
+
+<h3>Descriptión</h3>
+
+<pre><code>  This Class PHP allow create dynamic queries to create, update, delete and getting result for a database.
+
+   Type of query you can run.
+
+   INSERT INTO
+
+   UPDATE
+
+   DELETE
+
+   SELECT FROM
+
+   SELECT FROM JOIN
+
+   SELECT FROM WHERE
+
+   SELECT FROM WHERE LIKE
+
+   SELECT FROM WHERE BETWEEN
+
+   SELECT FROM WHERE ORDER BY
+
+   SELECT FROM WHERE ORDER BY LIMIT
+
+   QUERY( QUERY EXAMPLE : "SELECT * FROM"  );
+
+</code></pre>
+
+<h3>Usage</h3>
+
+<pre><code>
+
+
+   if( is_file( 'settings.php' ) ) require 'settings.php' 
+   if( is_file( 'db.php' ) ) require 'db.php' 
+   class ClassExample extends Db{
+
+      public function create( $data = array() ){
+
+    // Validation empty
+    if( empty( $data ) ) return false;
+
+
+    if( $this-&gt;insert( 'your_table', $data ) == true )
+        return true;
+    else
+        return false;   
+
+
+      }
+
+      public function all(){
+
+    $this-&gt;select(); 
+        $this-&gt;from( 'your_table' );
+
+    return $this-&gt;get();
+
+      }
+
+   }
+
+   $ClassExample  = new ClassExample();
+   $save = array( 'field1' =&gt; $value1 /*, 'field2' =&gt; #field2...*/ );
+
+   // Use this method to save info
+   $ClassExample -&gt; create ( $save );
+
+
+   // Getting Records
+   $data = $ClassExample -&gt; all();
+   print_r( $data ); // Print   
+
+
+</code></pre>
+
+<h3>Methods</h3>
+
+<pre><code>
+  insert( $table = null, $data = array() );
+  update( $table = null, $data = array(), $conditions = array() )
+  delete( $table = null, $data = null )
+
+/*  
+===========================  
+  PRODUCES 
+  SELECT *
+  OR
+  SELECT field1, field2
+=========================== */ 
+  select( $str = null )
+
+/*  
+===========================  
+  PRODUCES 
+  FROM table 
+  OR
+  FROM table1, table2
+=========================== */    
+  public function from( $table = null )
+
+/*  
+===========================  
+  PRODUCES 
+  WHERE key = value
+  AND key = value
+=========================== */  
+  public function where( $conditions = array() )
+
+
+/*  
+===========================  
+  PRODUCES 
+  WHERE field LIKE '%value%'
+  AND field LIKE '%value%'
+=========================== */  
+  public function where_like( $conditions = array() )
+
+
+/*  
+===========================  
+  PRODUCES 
+  OR key = value
+=========================== */  
+  public function or_where( $field = null, $value = null )
+
+
+/*  
+===========================  
+  PRODUCES 
+  AND condition BETWEEN 'value1' AND 'value2'
+=========================== */  
+ public function between( $condition = ' AND ', $field = null, $value = null, $value2 = null )
+
+
+/*  
+=====================================  
+  PRODUCES 
+  JOIN LEFT table ON conditions
+===================================== */ 
+  public function join( $table = null, $conditions = null )
+
+
+/*  
+=====================================  
+  PRODUCES 
+  LIMIT begin
+  OR
+  LIMIT begin, end
+===================================== */   
+  public function limit( $begin = 0, $end = null )
+
+
+/*  
+===========================  
+  PRODUCES 
+  ORDER BY field desc
+  OR
+  ORDER BY field asc
+=========================== */ 
+  public function order_by( $field = null, $condition = 'asc' )
+
+
+/*  
+===========================  
+  RETURN SET CURREN QUERY
+=========================== */  
+  public function getQuery()
+
+
+/*
+======================================================================================
+  GETTING QUERYS
+====================================================================================== */ 
+
+// RUNING A SIMPLE QUERY 
+   public function querys( $query = null )
+
+// RUNING A DINAMIC QUERY 
+  public function get( $table = null )
+
+
+</code></pre>
+
+<h3>Authors and Contributors</h3>
+
+<p><img src="http://www.ulisesrodriguez.com/images/Logo.png" width="50" height="60">
+<a href="https://github.com/ulisesrodriguez" class="user-mention">@ulisesrodriguez</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Dbmodel maintained by <a href="https://github.com/ulisesrodriguez">ulisesrodriguez</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-28627309-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
